@@ -1,5 +1,6 @@
 treeData = [""];
 productData = {1001: 0};
+
 test = new Vue({
     el: "#menu",
     data: {
