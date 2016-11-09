@@ -1,4 +1,4 @@
-treeData = [""];
+treeData = ["Отрасли"];
 productData = {1001: 0};
 
 test = new Vue({
