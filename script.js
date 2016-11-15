@@ -8,7 +8,6 @@ var test = [1, 2, 3];
 var importmetrApp = angular.module('importmetrApp', []);
 importmetrApp.controller('treeController', ['$scope', '$http', '$timeout', '$sce', function ($scope, $http, $timeout, $sce) {
     $scope.Industries = [];
-    /**********************************************************************HTTP GET ACTIONS***************************************************************/
 
     $http.get('http://importmetr.ru:8081/importmeter/all_industries').success(function (getAllIndustriesResponse) {
         if (getAllIndustriesResponse != null) {
@@ -19,10 +18,6 @@ importmetrApp.controller('treeController', ['$scope', '$http', '$timeout', '$sce
     });
     
     $scope.OnIndustryClick = function (industry) {
-        /*if(industry.isShown == true)
-            industry.isShown = false;
-        if (industry.isShown == false)
-            industry.isShown = true;*/
 
         $http.get('http://importmetr.ru:8081/importmeter/' + industry.code + '/all_products').success(function (getAllProductsResponse) {
             if (getAllProductsResponse != null) {
@@ -33,12 +28,6 @@ importmetrApp.controller('treeController', ['$scope', '$http', '$timeout', '$sce
     }
 }]);
 
-/*$(document).ready(function () {
-    $('label.tree-toggler').click(function () {
-        $(this).parent().children('ul.tree').toggle(300);
-        console.log("click");
-    });
-});*/
 
 var ChartObject = {
     chart: {
@@ -118,9 +107,6 @@ var Chart2Object = {
     }]
 };
 
-//getImportIndustry(2016, 1001);
-//getExportIndustry(2016, 1001);
-
 function updateChartImport() 
 {
     console.log(ChartObject.series);
@@ -130,7 +116,7 @@ function updateChartImport()
         if (ChartObject.series[i].name ===  "Импорт") 
         {
             if ( _.isEqual(ChartObject.series[i].data, zeroArray) ) 
-                        { ChartObject.series[i].data = getImportIndustry(2016, 1001); } //splice? vue.set?
+                        { ChartObject.series[i].data = getImportIndustry(2016, 1001); }
                     else { ChartObject.series[i].data = zeroArray; }
                 }
             };
