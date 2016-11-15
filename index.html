@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="importmetrApp">
 <head>
 	<meta charset="utf-8">
 	<title>importmetr</title>
@@ -8,7 +8,7 @@
 	
 
 </head>
-<body>
+<body ng-controller="treeController">
 	<nav class="navbar navbar-fixed-top">
 		<div class="container-fluid">
 			<div class="navbar-header">
@@ -44,13 +44,17 @@
 					<br>
 
 					<h4>Отрасли</h4>
+					
 					<ul class="nav-sidebar tree">
-						<li v-for="item in items"><label class="tree-toggler"><a href="#">{{item.code}}:{{item.name}}</a></label>
-						<ul class="nav tree stealth" v-for="product in products[item.code]">
-							<li><a href="#">{{product.code}}:{{product.name}}</a></li>
+					
+					 <li ng-repeat="industry in Industries" ng-click="OnIndustryClick(industry); industry.isShown=!industry.isShown"> 
+						<label class="tree-toggler"> <a href="#"> {{industry.code}}:{{industry.name}} </a> </label>
+						<ul class="nav tree" ng-if="industry.isShown">
+								<li ng-repeat="product in industry.products"><a href="#">{{product.tnved6}}:{{product.name}}</a></li>
 						</ul>
-						</li>
+					</li> 
 					</ul>
+					
 					<h4>Нормативные документы по отрасли</h4>
 					<ul class="nav nav-sidebar">
 						<li><a href="#">1</a></li>
@@ -64,13 +68,13 @@
 				<div id="checks">
 					<div class="col-md-6 col-lg-6 col-md-offset-4 col-lg-offset-4">
 
-						<input type="checkbox" id="import" value="Импорт" v-on:click="updateChartImport" checked>
+						<input type="checkbox" id="import" value="Импорт" ng-click="updateChartImport" checked>
 						<label for="import">Импорт</label>
-						<input type="checkbox" id="export" value="Экспорт" v-on:click="updateChartExport" checked>
+						<input type="checkbox" id="export" value="Экспорт" ng-click="updateChartExport" checked>
 						<label for="export">Экспорт</label>
-						<input type="checkbox" id="production" value="Производство" v-on:click="updateChartProd" checked>
+						<input type="checkbox" id="production" value="Производство" ng-click="updateChartProd" checked>
 						<label for="production">Производство</label>
-						<input type="checkbox" id="consumption" value="Потребление" v-on:click="updateChartCons" checked>
+						<input type="checkbox" id="consumption" value="Потребление" ng-click="updateChartCons" checked>
 						<label for="consumption">Потребление</label>
 						<br>
 
@@ -83,10 +87,10 @@
 	</div>
 </body>
 
+<script src="angular.min.js"></script>
 <script src="jquery-3.1.1.min.js"></script>
 <script src="bootstrap.min.js"></script>
 <script src="highcharts.js"></script>
-<script src="vue.js"></script>
 <script src="lodash.min.js"></script>
 <script src="axios.min.js"></script>
 <script src="URI.js"></script>

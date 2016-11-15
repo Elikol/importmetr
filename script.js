@@ -1,112 +1,95 @@
-treeData = ["Отрасли"];
-productData = {1001: 0};
+'use strict';
 
-test = new Vue({
-    el: "#menu",
-    data: {
-        items: treeData,
-        products: productData
-    },
-    methods: {}
-}
-);
+var industryData = {};
+var productData = {};
+var industryDataArr = [];
+var test = [1, 2, 3];
 
-function getAllIndustries() {
-    var numbers;
-    axios.get(
-        'http://importmetr.ru:8081/importmeter/all_industries'
-        ).then(function(response)
-        {
-            console.log(response);
-            treeData = response.data.data;
-            Vue.set(test, 'items', treeData);
-            for (var i = 0; i < treeData.length; i++)
-            {
-            getAllProducts(treeData[i].code);
-            }
-            Vue.set(test, 'products', productData);
-            console.log(productData);
-            return response.data.data;
-        });
-        
-    };
+var importmetrApp = angular.module('importmetrApp', []);
+importmetrApp.controller('treeController', ['$scope', '$http', '$timeout', '$sce', function ($scope, $http, $timeout, $sce) {
+    $scope.Industries = [];
+    /**********************************************************************HTTP GET ACTIONS***************************************************************/
 
-    function getAllProducts(industryCode) {
-
-        url = URI.expand("http://importmetr.ru:8081/importmeter/{code}/all_products", {
-          code: industryCode,
-      });
-
-        axios.get(url).then(function(response)
-        {
-            numbers = response;
-            for (var i = 0; i < treeData.length; i++)
-            {
-            productData[industryCode] = numbers.data.data;
-        }
-            return numbers.data.data;
-        });
-    };
-
-    getAllIndustries();
-    $(document).ready(function () {
-        $('label.tree-toggler').click(function () {
-            $(this).parent().children('ul.tree').toggle(300);
-        });
+    $http.get('http://importmetr.ru:8081/importmeter/all_industries').success(function (getAllIndustriesResponse) {
+        if (getAllIndustriesResponse != null) {
+            $scope.Industries = getAllIndustriesResponse.data;
+            console.log("Данные по отраслям загружены -->");
+            console.log("Массив из отраслей", $scope.Industries);
+        };
     });
+    
+    $scope.OnIndustryClick = function (industry) {
+        /*if(industry.isShown == true)
+            industry.isShown = false;
+        if (industry.isShown == false)
+            industry.isShown = true;*/
 
+        $http.get('http://importmetr.ru:8081/importmeter/' + industry.code + '/all_products').success(function (getAllProductsResponse) {
+            if (getAllProductsResponse != null) {
+                industry.products = getAllProductsResponse.data;
+                console.log("Массив из продуктов", industry.products);
+            };
+        });
+    }
+}]);
 
+/*$(document).ready(function () {
+    $('label.tree-toggler').click(function () {
+        $(this).parent().children('ul.tree').toggle(300);
+        console.log("click");
+    });
+});*/
 
-    ChartObject = {
-        chart: {
-            type: 'area'
-        },
+var ChartObject = {
+    chart: {
+        type: 'area'
+    },
+    title: {
+        text: 'Товарооборот'
+    },
+    subtitle: {
+        text: ''
+    },
+    xAxis: {
+        categories: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июнь', 'Июль', 'Авг', 'Сент', 'Окт', 'Нояб', 'Дек'],
+        tickmarkPlacement: 'on',
         title: {
-            text: 'Товарооборот'
+            enabled: false
+        }
+    },
+    yAxis: {
+        title: {
+            text: 'Тысяч'
         },
-        subtitle: {
-            text: ''
-        },
-        xAxis: {
-            categories: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июнь', 'Июль', 'Авг', 'Сент', 'Окт', 'Нояб', 'Дек'],
-            tickmarkPlacement: 'on',
-            title: {
-                enabled: false
+        labels: {
+            formatter: function () {
+                return this.value / 1000;
             }
-        },
-        yAxis: {
-            title: {
-                text: 'Тысяч'
-            },
-            labels: {
-                formatter: function () {
-                    return this.value / 1000;
-                }
-            } 
-        },
-        tooltip: {
-            split: true,
-            valueSuffix: ' тысяч'
-        },
-        plotOptions: {
-            area: {
-                lineColor: '#666666',
+        } 
+    },
+    tooltip: {
+        split: true,
+        valueSuffix: ' тысяч'
+    },
+    plotOptions: {
+        area: {
+            lineColor: '#666666',
+            lineWidth: 1,
+            marker: {
                 lineWidth: 1,
-                marker: {
-                    lineWidth: 1,
-                    lineColor: '#666666'
-                }
+                lineColor: '#666666'
             }
-        },
-        series: [
-        {
-            name: 'Импорт',
-            data: {}
-        }, {
-            name: 'Экспорт',
-            data: {}
-        }, {
-            name: 'Производство',
+        }
+    },
+    series: [
+    {
+        name: 'Импорт',
+        data: {}
+    }, {
+        name: 'Экспорт',
+        data: {}
+    }, {
+        name: 'Производство',
         //data: [163, 203, 276, 408, 547, 729, 628, 163, 203, 276, 408, 547]
     }, {
         name: 'Потребление',
@@ -114,7 +97,7 @@ function getAllIndustries() {
     }
     ]
 };
-Chart2Object = {
+var Chart2Object = {
     title: {
         text: 'Доля импорта',
     },
@@ -135,26 +118,18 @@ Chart2Object = {
     }]
 };
 
-getImportIndustry(2016, 1001);
-getExportIndustry(2016, 1001);
+//getImportIndustry(2016, 1001);
+//getExportIndustry(2016, 1001);
 
-
-new Vue({
-    el: '#checks',
-    data: {
-
-    },
-    methods: {
-
-        updateChartImport: function () 
+function updateChartImport() 
+{
+    console.log(ChartObject.series);
+    var zeroArray = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    for (var i = 0; i <= ChartObject.series.length-1; i++) 
+    {
+        if (ChartObject.series[i].name ===  "Импорт") 
         {
-            console.log(ChartObject.series);
-            var zeroArray = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-            for (var i = 0; i <= ChartObject.series.length-1; i++) 
-            {
-                if (ChartObject.series[i].name ===  "Импорт") 
-                {
-                    if ( _.isEqual(ChartObject.series[i].data, zeroArray) ) 
+            if ( _.isEqual(ChartObject.series[i].data, zeroArray) ) 
                         { ChartObject.series[i].data = getImportIndustry(2016, 1001); } //splice? vue.set?
                     else { ChartObject.series[i].data = zeroArray; }
                 }
@@ -163,9 +138,9 @@ new Vue({
                 Highcharts.chart('chart', ChartObject);
             });
 
-        },
+        };
 
-        updateChartExport: function () 
+        function updateChartExport() 
         {
             var zeroArray = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
             for (var i = 0; i <= ChartObject.series.length-1; i++) 
@@ -181,8 +156,9 @@ new Vue({
                 Highcharts.chart('chart', ChartObject);
             });
 
-        },
-        updateChartProd: function () 
+        };
+
+        function updateChartProd () 
         {
             var zeroArray = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
             for (var i = 0; i <= ChartObject.series.length-1; i++) 
@@ -198,9 +174,9 @@ new Vue({
                 Highcharts.chart('chart', ChartObject);
             });
 
-        },
+        };
 
-        updateChartCons: function () 
+        function updateChartCons  () 
         {
             var zeroArray = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
             for (var i = 0; i <= ChartObject.series.length-1; i++) 
@@ -216,43 +192,40 @@ new Vue({
                 Highcharts.chart('chart', ChartObject);
             });
 
-        },
-
-    }
-
-});
+        };
 
 
-$(function () {
+
+        $(function () {
     Highcharts.chart('chart', ChartObject); //Highcharts.stockChart
 });
 
-$(function () {
-    Highcharts.chart('chart2', Chart2Object);
-});
+        $(function () {
+            Highcharts.chart('chart2', Chart2Object);
+        });
 
 
 
 
 
-function getImportIndustry(year, industryCode) {
+        function getImportIndustry(year, industryCode) {
 
-    url = URI.expand("http://importmetr.ru:8081/importmeter/{code}/{ghod}/import", {
-      code: industryCode,
-      ghod: year
-  });
+            var url = URI.expand("http://importmetr.ru:8081/importmeter/{code}/{ghod}/import", {
+              code: industryCode,
+              ghod: year
+          });
 
-    url = url.toString();
-    axios.get(url).then(function(response)
-    {
-        console.log(response);
-        if (response.data.data.year_import_months_dollars != undefined)
-        {
-            Import = response.data.data.year_import_months_dollars;
-            for (var i = 0; i <= ChartObject.series.length-1; i++) 
+            url = url.toString();
+            axios.get(url).then(function(response)
             {
-                if (ChartObject.series[i].name ===  "Импорт") 
+                console.log(response);
+                if (response.data.data.year_import_months_dollars != undefined)
                 {
+                    var Import = response.data.data.year_import_months_dollars;
+                    for (var i = 0; i <= ChartObject.series.length-1; i++) 
+                    {
+                        if (ChartObject.series[i].name ===  "Импорт") 
+                        {
                              ChartObject.series[i].data = Import; //splice? vue.set?
                          }
                      };
@@ -263,74 +236,76 @@ function getImportIndustry(year, industryCode) {
                     {
                         if (ChartObject.series[i].name ===  "Импорт") 
                         {
-                           ChartObject.series[i].data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-                       }
-                   };
-               }
-           });
+                         ChartObject.series[i].data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+                     }
+                 };
+             }
+         });
 
-};
+        };
 
 
 
-function getExportIndustry(year, industryCode) {
+        function getExportIndustry(year, industryCode) {
 
-    url = URI.expand("http://importmetr.ru:8081/importmeter/{code}/{ghod}/export", {
-      code: industryCode,
-      ghod: year
-  });
+            var url = URI.expand("http://importmetr.ru:8081/importmeter/{code}/{ghod}/export", {
+              code: industryCode,
+              ghod: year
+          });
 
-    url = url.toString();
-    axios.get(url).then(function(response)
-    {
-       if (response.data.data.year_export_months_dollars != undefined)
-       {
-        Export = response.data.data.year_export_months_dollars;
-        for (var i = 0; i <= ChartObject.series.length-1; i++) 
-        {
-            if (ChartObject.series[i].name ===  "Экспорт") 
+            url = url.toString();
+            axios.get(url).then(function(response)
             {
-               ChartObject.series[i].data = Export;
-           }
-       };
-   }
-   else
-   {
-    for (var i = 0; i <= ChartObject.series.length-1; i++) 
-    {
-        if (ChartObject.series[i].name ===  "Экспорт") 
-        {
-           ChartObject.series[i].data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-       }
-   };
-}
+             if (response.data.data.year_export_months_dollars != undefined)
+             {
+                var Export = response.data.data.year_export_months_dollars;
+                for (var i = 0; i <= ChartObject.series.length-1; i++) 
+                {
+                    if (ChartObject.series[i].name ===  "Экспорт") 
+                    {
+                     ChartObject.series[i].data = Export;
+                 }
+             };
+         }
+         else
+         {
+            for (var i = 0; i <= ChartObject.series.length-1; i++) 
+            {
+                if (ChartObject.series[i].name ===  "Экспорт") 
+                {
+                 ChartObject.series[i].data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+             }
+         };
+     }
 
-});
+ });
 
-};
-function getProdIndustry(year, industryCode) {};
-function getConsIndustry(year, industryCode) {};
-function getImportShareIndustry(year, industryCode) {};
-function getImportTargerIndustry(year, industryCode) {};
-function getImportPredictionIndustry(year, industryCode) {};
+        };
 
-function getImportProduct(year, productCode) {
-};
-function getExportProduct(year, productCode) {
-};
-function getProdProduct(year, productCode) {};
-function getConsProduct(year, productCode) {};
-function getImportShareProduct(year, productCode) {};
-function getImportTargerProduct(year, productCode) {};
-function getImportPredictionProduct(year, productCode) {};
 
-function setChart(numbers) {
+        function getProdIndustry(year, industryCode) {};
+        function getConsIndustry(year, industryCode) {};
+        function getImportShareIndustry(year, industryCode) {};
+        function getImportTargerIndustry(year, industryCode) {};
+        function getImportPredictionIndustry(year, industryCode) {};
 
-};
-function setChartImport(numbers) {};
-function setChartExport(numbers) {};
-function setChartProd(numbers) {};
-function setChartCons(numbers) {};
-function setChartImportShare(numbers) {};
-function setChartImportTarget(numbers) {};
-function setChartImportPrediction(numbers) {};
+        function getImportProduct(year, productCode) {
+        };
+        function getExportProduct(year, productCode) {
+        };
+        function getProdProduct(year, productCode) {};
+        function getConsProduct(year, productCode) {};
+        function getImportShareProduct(year, productCode) {};
+        function getImportTargerProduct(year, productCode) {};
+        function getImportPredictionProduct(year, productCode) {};
+
+        function setChart(numbers) {
+
+        };
+        function setChartImport(numbers) {};
+        function setChartExport(numbers) {};
+        function setChartProd(numbers) {};
+        function setChartCons(numbers) {};
+        function setChartImportShare(numbers) {};
+        function setChartImportTarget(numbers) {};
+        function setChartImportPrediction(numbers) {};
