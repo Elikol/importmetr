@@ -47,8 +47,10 @@
 					
 					<ul class="nav-sidebar tree">
 					
-					 <li ng-repeat="industry in Industries" ng-click="OnIndustryClick(industry); industry.isShown=!industry.isShown"> 
-						<label class="tree-toggler"> <a href="#"> {{industry.code}}:{{industry.name}} </a> </label>
+					 <li ng-repeat="industry in Industries"> 
+						<label class="tree-toggler" ng-click="OnIndustryClick(industry); industry.isShown=!industry.isShown"> 
+							<a href="#"> {{industry.code}}:{{industry.name}} </a> 
+						</label>
 						<ul class="nav tree" ng-if="industry.isShown">
 								<li ng-repeat="product in industry.products"><a href="#">{{product.tnved6}}:{{product.name}}</a></li>
 						</ul>
