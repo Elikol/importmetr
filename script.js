@@ -2,42 +2,25 @@
 
 var industryData = {};
 var productData = {};
-var industryDataArr = [];
-var test = [1, 2, 3];
 
-var importmetrApp = angular.module('importmetrApp', []);
-importmetrApp.controller('treeController', ['$scope', '$http', '$timeout', '$sce', function ($scope, $http, $timeout, $sce) {
-    $scope.Industries = [];
+var importData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+var exportData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+var prodData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+var shareData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+//[7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6];
 
-    $http.get('http://importmetr.ru:8081/importmeter/all_industries').success(function (getAllIndustriesResponse) {
-        if (getAllIndustriesResponse != null) {
-            $scope.Industries = getAllIndustriesResponse.data;
-            console.log("Данные по отраслям загружены -->");
-            console.log("Массив из отраслей", $scope.Industries);
-        };
-    });
-    
-    $scope.OnIndustryClick = function (industry) {
-
-        $http.get('http://importmetr.ru:8081/importmeter/' + industry.code + '/all_products').success(function (getAllProductsResponse) {
-            if (getAllProductsResponse != null) {
-                industry.products = getAllProductsResponse.data;
-                console.log("Массив из продуктов", industry.products);
-            };
-        });
-    }
-}]);
-
+var year = 2016;
 
 var ChartObject = {
-    chart: {
-        type: 'area'
-    },
     title: {
         text: 'Товарооборот'
     },
-    subtitle: {
-        text: ''
+    rangeSelector:
+    {
+        enabled: false
+    },
+    chart: {
+        renderTo: 'chart',
     },
     xAxis: {
         categories: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июнь', 'Июль', 'Авг', 'Сент', 'Окт', 'Нояб', 'Дек'],
@@ -68,27 +51,39 @@ var ChartObject = {
                 lineWidth: 1,
                 lineColor: '#666666'
             }
+        },
+        series: {
+            compare: 'percent',
+            showInNavigator: true
         }
     },
     series: [
     {
         name: 'Импорт',
-        data: {}
-    }, {
+        data: importData
+    }, 
+    {
         name: 'Экспорт',
-        data: {}
-    }, {
+        data: exportData
+    }, 
+    {
         name: 'Производство',
-        //data: [163, 203, 276, 408, 547, 729, 628, 163, 203, 276, 408, 547]
-    }, {
-        name: 'Потребление',
-        //data: [18, 31, 54, 156, 339, 818, 1201, 18, 31, 54, 156, 339]
+        data: prodData
     }
     ]
 };
+
 var Chart2Object = {
+
     title: {
         text: 'Доля импорта',
+    },
+    rangeSelector:
+    {
+        enabled: false
+    },
+    chart: {
+        renderTo: 'chart2'
     },
     xAxis: {
         categories: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июнь', 'Июль', 'Авг', 'Сент', 'Окт', 'Нояб', 'Дек']
@@ -101,21 +96,158 @@ var Chart2Object = {
     tooltip: {
         valueSuffix: '%'
     },
+
     series: [{
         name: 'Доля импорта в отрасли',
-        data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6]
+        data: shareData
     }]
 };
 
-function updateChartImport() 
-{
-    console.log(ChartObject.series);
-    var zeroArray = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-    for (var i = 0; i <= ChartObject.series.length-1; i++) 
+var ImportChart;
+var ShareChart;
+
+var importmetrApp = angular.module('importmetrApp', []);
+importmetrApp.controller('treeController', ['$scope', '$http', '$timeout', '$sce', function ($scope, $http, $timeout, $sce) {
+    $scope.Industries = [];
+
+    $http.get('http://importmetr.ru:8081/importmeter/all_industries').success(function (getAllIndustriesResponse) {
+        if (getAllIndustriesResponse != null) {
+            $scope.Industries = getAllIndustriesResponse.data;
+            console.log("Данные по отраслям загружены -->");
+            console.log("Массив из отраслей", $scope.Industries);
+        };
+    });
+    
+    $scope.OnIndustryClick = function (industry) 
     {
-        if (ChartObject.series[i].name ===  "Импорт") 
+
+        //Все продукты
+        $http.get('http://importmetr.ru:8081/importmeter/' + industry.code + '/all_products').success(function (getAllProductsResponse) {
+            if (getAllProductsResponse != null) {
+                industry.products = getAllProductsResponse.data;
+                console.log("Массив из продуктов", industry.products);
+            };
+        });
+
+        //Импорт отрасли
+        $http.get('http://importmetr.ru:8081/importmeter/' + industry.code + '/' + year + '/import').success(function (getImportResponse) {
+            if (getImportResponse != null && getImportResponse.data.year_import_months_dollars != null) {
+                importData = getImportResponse.data.year_import_months_dollars;
+                console.log("Массив импорта", importData);
+                ImportChart.series[0].setData(importData, true);
+
+            };
+        });
+
+        //Экспорт отрасли
+        $http.get('http://importmetr.ru:8081/importmeter/' + industry.code + '/' + year + '/export').success(function (getExportResponse) {
+            if (getExportResponse != null && getExportResponse.data.year_import_months_dollars != null) {
+                exportData = getExportResponse.data.year_import_months_dollars;
+                console.log("Массив экспорта", exportData);
+                ImportChart.series[1].setData(exportData, true);
+                for (var i=0; i<prodData.length-1; i++)
+                {
+                    shareData[i] = importData[i] / (importData[i] + prodData[i] - exportData[i]);
+                };
+                ShareChart.series[0].setData(shareData, true);
+
+            };
+        });
+
+        //Производство отрасли
+        $http.get('http://importmetr.ru:8081/importmeter/' + industry.code + '/' + year + '/production').success(function (getProdResponse) {
+            if (getProdResponse != null && getProdResponse.data.year_import_months_dollars != null) {
+                prodData = getProdResponse.data.year_import_months_dollars;
+                console.log("Массив производства", prodData);
+                ImportChart.series[2].setData(prodData, true);
+            };
+            for (var i=0; i<prodData.length-1; i++)
+            {
+                shareData[i] = importData[i] / (importData[i] + prodData[i] - exportData[i]);
+            };
+            ShareChart.series[0].setData(shareData, true);
+        });
+
+    }
+
+    $scope.OnProductClick = function (product)
+    {
+
+        //Импорт продукта
+        $http.get('http://importmetr.ru:8081/importmeter/' + product.tnved4 + '/' + product.tnved6 + '/' + year + '/import').success(function (getImportResponse) {
+            if (getImportResponse != null && getImportResponse.data.year_import_months_dollars != null) {
+                importData = getImportResponse.data.year_import_months_dollars;
+                console.log("Массив импорта", importData);
+                ImportChart.series[0].setData(importData, true);
+                for (var i=0; i<prodData.length-1; i++)
+                {
+                    shareData[i] = importData[i] / (importData[i] + prodData[i] - exportData[i]);
+                };
+                ShareChart.series[0].setData(shareData, true);
+
+            };
+        });
+
+        //Экспорт продукта
+        $http.get('http://importmetr.ru:8081/importmeter/' + product.tnved4 + '/' + product.tnved6 + '/' + year + '/export').success(function (getExportResponse) {
+            if (getExportResponse != null && getExportResponse.data.year_import_months_dollars != null) {
+                exportData = getExportResponse.data.year_import_months_dollars;
+                console.log("Массив экспорта", exportData);
+                ImportChart.series[1].setData(exportData, true);
+                for (var i=0; i<prodData.length-1; i++)
+                {
+                    shareData[i] = importData[i] / (importData[i] + prodData[i] - exportData[i]);
+                };
+                ShareChart.series[0].setData(shareData, true);
+
+            };
+        });
+
+        //Производство продукта
+        $http.get('http://importmetr.ru:8081/importmeter/' + product.tnved4 + '/' + product.tnved6 + '/' + year + '/production').success(function (getProdResponse) {
+            if (getProdResponse != null && getProdResponse.data.year_import_months_dollars != null) {
+                prodData = getProdResponse.data.year_import_months_dollars;
+                console.log("Массив производства", prodData);
+                ImportChart.series[2].setData(prodData, true);
+            };
+            for (var i=0; i<prodData.length-1; i++)
+            {
+                shareData[i] = importData[i] / (importData[i] + prodData[i] - exportData[i]);
+            };
+            ShareChart.series[0].setData(shareData, true);
+        });
+
+
+    }
+
+}]);
+
+ImportChart = new Highcharts.stockChart(ChartObject);
+ShareChart = new Highcharts.stockChart(Chart2Object);
+
+
+        /*
+        $(function () {
+            ImportChart = Highcharts.stockChart('chart', ChartObject);
+        });
+
+        $(function () {
+            ShareChart = Highcharts.stockChart('chart2', Chart2Object);
+        });
+
+        */
+
+
+
+        function updateChartImport() 
         {
-            if ( _.isEqual(ChartObject.series[i].data, zeroArray) ) 
+            console.log(ChartObject.series);
+            var zeroArray = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+            for (var i = 0; i <= ChartObject.series.length-1; i++) 
+            {
+                if (ChartObject.series[i].name ===  "Импорт") 
+                {
+                    if ( _.isEqual(ChartObject.series[i].data, zeroArray) ) 
                         { ChartObject.series[i].data = getImportIndustry(2016, 1001); }
                     else { ChartObject.series[i].data = zeroArray; }
                 }
@@ -182,19 +314,10 @@ function updateChartImport()
 
 
 
-        $(function () {
-    Highcharts.chart('chart', ChartObject); //Highcharts.stockChart
-});
-
-        $(function () {
-            Highcharts.chart('chart2', Chart2Object);
-        });
 
 
-
-
-
-        function getImportIndustry(year, industryCode) {
+        function getImportIndustry(year, industryCode) 
+        {
 
             var url = URI.expand("http://importmetr.ru:8081/importmeter/{code}/{ghod}/import", {
               code: industryCode,
@@ -232,7 +355,8 @@ function updateChartImport()
 
 
 
-        function getExportIndustry(year, industryCode) {
+        function getExportIndustry(year, industryCode) 
+        {
 
             var url = URI.expand("http://importmetr.ru:8081/importmeter/{code}/{ghod}/export", {
               code: industryCode,
@@ -244,54 +368,29 @@ function updateChartImport()
             {
              if (response.data.data.year_export_months_dollars != undefined)
              {
-                var Export = response.data.data.year_export_months_dollars;
-                for (var i = 0; i <= ChartObject.series.length-1; i++) 
-                {
-                    if (ChartObject.series[i].name ===  "Экспорт") 
+                    var Export = response.data.data.year_export_months_dollars;
+                    for (var i = 0; i <= ChartObject.series.length-1; i++) 
                     {
-                     ChartObject.series[i].data = Export;
-                 }
-             };
-         }
-         else
-         {
-            for (var i = 0; i <= ChartObject.series.length-1; i++) 
-            {
-                if (ChartObject.series[i].name ===  "Экспорт") 
-                {
-                 ChartObject.series[i].data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+                        if (ChartObject.series[i].name ===  "Экспорт") 
+                        {
+                         ChartObject.series[i].data = Export;
+                        }
+                    };
+            }
+            else
+             {
+                    for (var i = 0; i <= ChartObject.series.length-1; i++) 
+                    {
+                        if (ChartObject.series[i].name ===  "Экспорт") 
+                        {
+                         ChartObject.series[i].data = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+                        }
+                    };
              }
-         };
-     }
 
- });
 
+            });
         };
 
 
-        function getProdIndustry(year, industryCode) {};
-        function getConsIndustry(year, industryCode) {};
-        function getImportShareIndustry(year, industryCode) {};
-        function getImportTargerIndustry(year, industryCode) {};
-        function getImportPredictionIndustry(year, industryCode) {};
 
-        function getImportProduct(year, productCode) {
-        };
-        function getExportProduct(year, productCode) {
-        };
-        function getProdProduct(year, productCode) {};
-        function getConsProduct(year, productCode) {};
-        function getImportShareProduct(year, productCode) {};
-        function getImportTargerProduct(year, productCode) {};
-        function getImportPredictionProduct(year, productCode) {};
-
-        function setChart(numbers) {
-
-        };
-        function setChartImport(numbers) {};
-        function setChartExport(numbers) {};
-        function setChartProd(numbers) {};
-        function setChartCons(numbers) {};
-        function setChartImportShare(numbers) {};
-        function setChartImportTarget(numbers) {};
-        function setChartImportPrediction(numbers) {};

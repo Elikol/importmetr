@@ -64,7 +64,7 @@
 				</button>
 
 					<form class="search">
-						<input type="text" class="form-control" placeholder="Поиск (ОКПД)">
+						<input type="text" class="form-control" placeholder="Поиск (ТНВЭД)">
 						<button type="submit" class="btn btn-default">Найти</button>
 					</form>
 			</div>
@@ -91,16 +91,21 @@
 
 					<h4>Отрасли</h4>
 					
-					<h4><a href="#" ng-click="showTree=!showTree"> Свернуть все продукты</a> </h4>
+					<h4><a href="#" ng-click="showTree=!showTree"> Развернуть все отрасли </a> </h4>
 					<ul class="nav-sidebar tree" ng-if="showTree">
 					
 					 <li ng-repeat="industry in Industries" > 
-						<label ng-click="OnIndustryClick(industry); industry.isShown=!industry.isShown;"> 
-							<a href="#"> {{industry.code}}:{{industry.name}} </a> 
+						<label> 
+							<a href="#" ng-click="OnIndustryClick(industry); industry.isShown=!industry.isShown;"> {{industry.code}}:{{industry.name}} 
+							</a> 
 						</label>
 						<div ng-if="industry.isShown">
 						<ul class="nav tree">
-								<li ng-repeat="product in industry.products" ><a href="#">{{product.tnved6}}:{{product.name}}</a></li>
+								<li ng-repeat="product in industry.products" >
+									<a href="#" ng-click="OnProductClick(product);">
+									{{product.tnved6}}:{{product.name}}
+									</a>
+								</li>
 						</ul>
 						</div>
 					</li> 
@@ -117,19 +122,20 @@
 			</div>
 			<div class="col-md-9 col-lg-9">
 				<div id="checks">
-					<div class="col-md-6 col-lg-6 col-md-offset-4 col-lg-offset-4">
+					<div class="text-center">
 
-						<input type="checkbox" id="import" value="Импорт" ng-click="updateChartImport" checked>
+						<input type="checkbox" id="import" value="Импорт" ng-click="updateChartImport();" checked>
 						<label for="import">Импорт</label>
-						<input type="checkbox" id="export" value="Экспорт" ng-click="updateChartExport" checked>
+						<input type="checkbox" id="export" value="Экспорт" ng-click="updateChartExport();" checked>
 						<label for="export">Экспорт</label>
-						<input type="checkbox" id="production" value="Производство" ng-click="updateChartProd" checked>
+						<input type="checkbox" id="production" value="Производство" ng-click="updateChartProd();" checked>
 						<label for="production">Производство</label>
-						<input type="checkbox" id="consumption" value="Потребление" ng-click="updateChartCons" checked>
-						<label for="consumption">Потребление</label>
-						<br>
+						<!-- <input type="checkbox" id="consumption" value="Потребление" ng-click="updateChartCons" checked>
+						<label for="consumption">Потребление</label> -->
+
 
 					</div>
+
 					<div id="chart"></div>
 					<div id="chart2"></div>
 				</div>
@@ -141,7 +147,7 @@
 <script src="angular.min.js"></script>
 <script src="jquery-3.1.1.min.js"></script>
 <script src="bootstrap.min.js"></script>
-<script src="highcharts.js"></script>
+<script src="highstock.js"></script>
 <script src="lodash.min.js"></script>
 <script src="axios.min.js"></script>
 <script src="URI.js"></script>
