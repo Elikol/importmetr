@@ -6,55 +6,55 @@
 	<link href="bootstrap.min.css" rel="stylesheet" type="text/css">
 	<link href="styles.css" rel="stylesheet" type="text/css">
 	<!-- Analytics counter -->
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	<script>
+		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
-  ga('create', 'UA-87374672-1', 'auto');
-  ga('send', 'pageview');
+		ga('create', 'UA-87374672-1', 'auto');
+		ga('send', 'pageview');
  // ga('set', 'userId', {{USER_ID}}); // Задание идентификатора пользователя с помощью параметра user_id (текущий пользователь).
 </script>
 <!-- /Analytics counter -->
 
 <!-- Yandex.Metrika counter -->
 <script type="text/javascript">
-    (function (d, w, c) {
-        (w[c] = w[c] || []).push(function() {
-            try {
-                w.yaCounter40923174 = new Ya.Metrika({
-                    id:40923174,
-                    clickmap:true,
-                    trackLinks:true,
-                    accurateTrackBounce:true,
-                    webvisor:true
-                });
-            } catch(e) { }
-        });
+	(function (d, w, c) {
+		(w[c] = w[c] || []).push(function() {
+			try {
+				w.yaCounter40923174 = new Ya.Metrika({
+					id:40923174,
+					clickmap:true,
+					trackLinks:true,
+					accurateTrackBounce:true,
+					webvisor:true
+				});
+			} catch(e) { }
+		});
 
-        var n = d.getElementsByTagName("script")[0],
-            s = d.createElement("script"),
-            f = function () { n.parentNode.insertBefore(s, n); };
-        s.type = "text/javascript";
-        s.async = true;
-        s.src = "https://mc.yandex.ru/metrika/watch.js";
+		var n = d.getElementsByTagName("script")[0],
+		s = d.createElement("script"),
+		f = function () { n.parentNode.insertBefore(s, n); };
+		s.type = "text/javascript";
+		s.async = true;
+		s.src = "https://mc.yandex.ru/metrika/watch.js";
 
-        if (w.opera == "[object Opera]") {
-            d.addEventListener("DOMContentLoaded", f, false);
-        } else { f(); }
-    })(document, window, "yandex_metrika_callbacks");
+		if (w.opera == "[object Opera]") {
+			d.addEventListener("DOMContentLoaded", f, false);
+		} else { f(); }
+	})(document, window, "yandex_metrika_callbacks");
 </script>
 <noscript><div><img src="https://mc.yandex.ru/watch/40923174" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
 <!-- /Yandex.Metrika counter -->
-	
+
 
 </head>
 <body ng-controller="treeController">
 	<nav class="navbar navbar-fixed-top">
 		<div class="container-fluid">
 			<div class="navbar-header">
-			<a class="navbar-brand" href="#">Барометр импортозамещения</a>
+				<a class="navbar-brand" href="#">Барометр импортозамещения</a>
 
 				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
 					<span class="sr-only">Включить/выключить навигацию</span>
@@ -63,54 +63,179 @@
 					<span class="icon-bar"></span>
 				</button>
 
-					<form class="search">
-						<input type="text" class="form-control" placeholder="Поиск (ТНВЭД)">
-						<button type="submit" class="btn btn-default">Найти</button>
-					</form>
+				<form class="search">
+					<input type="text" class="form-control" placeholder="Поиск (ТНВЭД)">
+					<button type="submit" class="btn btn-default">Найти</button>
+				</form>
 			</div>
 
 			<div class="collapse navbar-collapse" id="navbar">
 
 				<ul class="nav navbar-nav">
 
-					<li><a href="#">О проекте</a></li>
-					<li><a href="#">Руководство</a></li>
-					<li><a href="#">Методика</a></li>
-					<li><a href="#">Контакты</a></li>
+					<li>
+						<a href="#">
+							<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#aboutModal">
+								О проекте
+							</button>
+						</a>
+					</li>
+
+					<li>
+						<a href="#">
+							<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#guideModal">
+								Руководство
+							</button>
+						</a>
+					</li>
+
+					<li>
+						<a href="#">
+							<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#methModal">
+								Методика
+							</button>
+						</a>
+					</li>
+
+					<li>
+						<a href="#">
+							<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#contModal">
+								Контакты
+							</button>
+						</a>
+					</li>
+
 				</ul>
 			</div>
 		</div>
 	</nav>
-	<div class="container-fluid">
-		<div class="row">
-			<div class="col-md-3 col-lg-3">
-				<div class="sidebar" id="menu">
-					
 
-					<br>
+	<div class="modal fade" id="aboutModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title" id="myModalLabel">О проекте</h4>
+				</div>
+				<div class="modal-body">
+					<i>"- А динамика замещения?
+						- Сейчас будем считать долю импорта. Сделаем перекодировку, проверим, через неделю ответим вам."
+						"Коллеги, есть у кого-нибудь данные по замещению сыров? Не могу найти ни в поиске, ни в базах("
+						"Мы не сможем подготовить отчет сегодня - мы все еще ищем данные по таможке... Потом еще сведеение, диаграммы..."
+						- пользователи Барометра до первого знакомства с ним. </i>
+						<p></p>
+						Барометр импортозамещения (importmetr.ru) - первый в РФ монитор импортозамщения. Вы выбираете интересующие вас отрасли и товары - барометр показывает вам обработанные данные по ним. И производство, и "таможня", и расчет доли между ними - в одном окне. Вам больше не нужно тратить часы времени на то, чтобы искать данные во вторичных отчетах по всему интернету, или самостоятельно браться за сведение и расчет данных. 
+						<p></p>
+						Синхронизируйтесь с барометром каждый месяц - здесь всегда свежие данные!
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+					</div>
+				</div>
+			</div>
+		</div>
 
-					<h4>Отрасли</h4>
-					
-					<h4><a href="#" ng-click="showTree=!showTree"> Развернуть все отрасли </a> </h4>
-					<ul class="nav-sidebar tree" ng-if="showTree">
-					
-					 <li ng-repeat="industry in Industries" > 
+		<div class="modal fade" id="guideModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title" id="myModalLabel">Руководство</h4>
+					</div>
+					<div class="modal-body">
+						Вы в Барометре импортозамещения! Здесь собраны свежие данные по замещению товаров в приоритетных отраслях промышленности. 
+
+						<!-- Пять простых шагов помогут вам здесь освоиться 
+
+						""Начать тур"" ""Спасибо, разберусь самостоятельно""" -->
+
+						<p></p>
+						В дереве слева вы можете выбрать интересующие вас категории и товары. Для того, чтобы увидеть товары внутри отрасли, нажмите на её название. Дерево классифицировано по ТН ВЭД.
+						<p></p>
+						При выборе товара или отрасли, на верхнем графике появлются данные. Вы можете включать/выключать интересующие вас данные нажатием на подписи "Импорт" и "Экспорт"
+
+						<p></p>
+						На нижнем графике вы видите основной показатель импортозамещния - доля импорта в потреблении этого товара в РФ.
+
+						Примечание: Данные по доле импорта в потреблении находятся в обработке. На графике изображена симуляция (21.11.16).
+
+						<p></p>
+						<!-- Здесь вы будете видеть нормативные документы, регулирующие импортозамещение в выбранной вами отрасли. -->
+
+						Если вас заинтересовала методика расчета, или вы хотите связаться с разработчиками Барометра - найдите нас в разделе "Контакты"
+
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="methModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel">Методика</h4>
+			</div>
+			<div class="modal-body">
+				...
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="contModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="myModalLabel">Контакты</h4>
+			</div>
+			<div class="modal-body">
+				welcome@importmetr.ru
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-3 col-lg-3">
+			<div class="sidebar" id="menu">
+
+
+				<br>
+
+				<h4>Отрасли</h4>
+
+				<h4><a href="#" ng-click="showTree=!showTree"> Развернуть все отрасли </a> </h4>
+				<ul class="nav-sidebar tree" ng-if="showTree">
+
+					<li ng-repeat="industry in Industries" > 
 						<label> 
 							<a href="#" ng-click="OnIndustryClick(industry); industry.isShown=!industry.isShown;"> {{industry.code}}:{{industry.name}} 
 							</a> 
 						</label>
 						<div ng-if="industry.isShown">
-						<ul class="nav tree">
+							<ul class="nav tree">
 								<li ng-repeat="product in industry.products" >
 									<a href="#" ng-click="OnProductClick(product);">
-									{{product.tnved6}}:{{product.name}}
+										{{product.tnved6}}:{{product.name}}
 									</a>
 								</li>
-						</ul>
+							</ul>
 						</div>
 					</li> 
-					</ul>
-					
+				</ul>
+
 					<!-- <h4>Нормативные документы по отрасли</h4>
 					<ul class="nav nav-sidebar">
 						<li><a href="#">1</a></li>
@@ -122,11 +247,11 @@
 			</div>
 			<div class="col-md-9 col-lg-9">
 				<div id="checks">
-				<select ng-model="selectedYear" ng-options="year for year in years track by year">
+					<select ng-model="selectedYear" ng-options="year for year in years track by year">
 
-				</select>
+					</select>
 					<div class="text-center">
-					<div><b>Код: </b>{{display.code}}, <b>Название: </b>{{display.name}}, <b>Год: </b>{{display.year}}</div>
+						<div><b>Код: </b>{{display.code}}, <b>Название: </b>{{display.name}}, <b>Год: </b>{{display.year}}</div>
 
 					<!--
 						<input type="checkbox" id="import" value="Импорт" ng-click="updateChartImport();" checked>
@@ -138,14 +263,14 @@
 					-->
 
 
-					</div>
-
-					<div id="chart"></div>
-					<div id="chart2"></div>
 				</div>
-			</div>      
-		</div>
+
+				<div id="chart"></div>
+				<div id="chart2"></div>
+			</div>
+		</div>      
 	</div>
+</div>
 </body>
 
 <script src="angular.min.js"></script>
