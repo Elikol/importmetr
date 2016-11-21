@@ -91,10 +91,12 @@ var Chart2Object = {
         valueSuffix: '%'
     },
 
-    series: [{
+    series: [
+    {
         name: 'Доля импорта в отрасли',
         data: shareData
-    }]
+    }
+    ]
 };
 
 var ImportChart;
@@ -135,6 +137,13 @@ importmetrApp.controller('treeController', ['$scope', '$http', '$timeout', '$sce
                 $scope.display.year = $scope.selectedYear;
                 console.log("Массив импорта отрасли", importData);
                 ImportChart.series[0].setData(importData, true);
+                var newData = [];
+                for (var i=0; i<shareData.length; i++)
+                {
+                    newData[i] = Math.random() * 80;
+                };
+                ShareChart.series[0].setData(newData, true);
+
 
             };
         });
@@ -148,11 +157,12 @@ importmetrApp.controller('treeController', ['$scope', '$http', '$timeout', '$sce
                 $scope.display.year = $scope.selectedYear;
                 console.log("Массив экспорта отрасли", exportData);
                 ImportChart.series[1].setData(exportData, true);
-                for (var i=0; i<prodData.length-1; i++)
+                var newData = [];
+                for (var i=0; i<shareData.length; i++)
                 {
-                    shareData[i] = importData[i] / (importData[i] + prodData[i] - exportData[i]);
+                    newData[i] = Math.random() * 80;
                 };
-                ShareChart.series[0].setData(shareData, true);
+                ShareChart.series[0].setData(newData, true);
 
             };
         });
@@ -188,11 +198,12 @@ importmetrApp.controller('treeController', ['$scope', '$http', '$timeout', '$sce
                 $scope.display.year = $scope.selectedYear;
                 console.log("Массив импорта продуктов", importData);
                 ImportChart.series[0].setData(importData, true);
-                for (var i=0; i<prodData.length-1; i++)
+                var newData = [];
+                for (var i=0; i<shareData.length; i++)
                 {
-                    shareData[i] = importData[i] / (importData[i] + prodData[i] - exportData[i]);
+                    newData[i] = Math.random() * 80;
                 };
-                ShareChart.series[0].setData(shareData, true);
+                ShareChart.series[0].setData(newData, true);
 
             };
         });
@@ -206,12 +217,12 @@ importmetrApp.controller('treeController', ['$scope', '$http', '$timeout', '$sce
                 $scope.display.year = $scope.selectedYear;
                 console.log("Массив экспорта продуктов", exportData);
                 ImportChart.series[1].setData(exportData, true);
-                for (var i=0; i<prodData.length-1; i++)
+                var newData = [];
+                for (var i=0; i<shareData.length; i++)
                 {
-                    shareData[i] = importData[i] / (importData[i] + prodData[i] - exportData[i]);
+                    newData[i] = Math.random() * 80;
                 };
-                ShareChart.series[0].setData(shareData, true);
-
+                ShareChart.series[0].setData(newData, true);
             };
         });
 
