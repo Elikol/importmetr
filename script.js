@@ -29,17 +29,12 @@ var ChartObject = {
     },
     yAxis: {
         title: {
-            text: 'Тысяч долларов'
-        },
-        labels: {
-            formatter: function () {
-                return this.value;
-            }
-        } 
+            text: 'Долларов'
+        }
     },
     tooltip: {
         split: true,
-        valueSuffix: ' тысяч долларов'
+        valueSuffix: ' долларов'
     },
     /*plotOptions: {
         area: {
@@ -63,11 +58,12 @@ var ChartObject = {
     {
         name: 'Экспорт',
         data: exportData
-    }, 
+    }
+    /*, 
     {
         name: 'Производство',
         data: prodData
-    }
+    }*/
     ]
 };
 
@@ -162,7 +158,7 @@ importmetrApp.controller('treeController', ['$scope', '$http', '$timeout', '$sce
         });
 
         //Производство отрасли
-        $http.get('http://importmetr.ru:8081/importmeter/' + industry.code + '/' + $scope.selectedYear + '/production').success(function (getProdResponse) {
+       /* $http.get('http://importmetr.ru:8081/importmeter/' + industry.code + '/' + $scope.selectedYear + '/production').success(function (getProdResponse) {
             if (getProdResponse != null && getProdResponse.data.year_import_months_dollars != null) {
                 prodData = getProdResponse.data.year_import_months_dollars;
                 $scope.display.code = getProdResponse.data.industry_code;
@@ -176,7 +172,7 @@ importmetrApp.controller('treeController', ['$scope', '$http', '$timeout', '$sce
                 shareData[i] = importData[i] / (importData[i] + prodData[i] - exportData[i]);
             };
             ShareChart.series[0].setData(shareData, true);
-        });
+        });*/
 
     }
 
@@ -220,7 +216,7 @@ importmetrApp.controller('treeController', ['$scope', '$http', '$timeout', '$sce
         });
 
         //Производство продукта
-        $http.get('http://importmetr.ru:8081/importmeter/' + product.tnved4 + '/' + product.tnved6 + '/' + $scope.selectedYear + '/production').success(function (getProdResponse) {
+       /* $http.get('http://importmetr.ru:8081/importmeter/' + product.tnved4 + '/' + product.tnved6 + '/' + $scope.selectedYear + '/production').success(function (getProdResponse) {
             if (getProdResponse != null && getProdResponse.data.year_import_months_dollars != null) {
                 prodData = getProdResponse.data.year_import_months_dollars;
                 $scope.display.code = getProdResponse.data.product_name;
@@ -234,7 +230,7 @@ importmetrApp.controller('treeController', ['$scope', '$http', '$timeout', '$sce
                 shareData[i] = importData[i] / (importData[i] + prodData[i] - exportData[i]);
             };
             ShareChart.series[0].setData(shareData, true);
-        });
+        });*/
 
 
     }
