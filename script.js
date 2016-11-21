@@ -9,8 +9,6 @@ var prodData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 var shareData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 //[7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3, 13.9, 9.6];
 
-var year = 2016;
-
 var ChartObject = {
     title: {
         text: 'Товарооборот'
@@ -31,19 +29,19 @@ var ChartObject = {
     },
     yAxis: {
         title: {
-            text: 'Тысяч'
+            text: 'Тысяч долларов'
         },
         labels: {
             formatter: function () {
-                return this.value / 1000;
+                return this.value;
             }
         } 
     },
     tooltip: {
         split: true,
-        valueSuffix: ' тысяч'
+        valueSuffix: ' тысяч долларов'
     },
-    plotOptions: {
+    /*plotOptions: {
         area: {
             lineColor: '#666666',
             lineWidth: 1,
@@ -56,7 +54,7 @@ var ChartObject = {
             compare: 'percent',
             showInNavigator: true
         }
-    },
+    },*/
     series: [
     {
         name: 'Импорт',
@@ -109,6 +107,9 @@ var ShareChart;
 var importmetrApp = angular.module('importmetrApp', []);
 importmetrApp.controller('treeController', ['$scope', '$http', '$timeout', '$sce', function ($scope, $http, $timeout, $sce) {
     $scope.Industries = [];
+    $scope.selectedYear = 2016;
+    $scope.years = [2015, 2016];
+    $scope.display = {code: "", name: "", year: ""}
 
     $http.get('http://importmetr.ru:8081/importmeter/all_industries').success(function (getAllIndustriesResponse) {
         if (getAllIndustriesResponse != null) {
@@ -130,20 +131,26 @@ importmetrApp.controller('treeController', ['$scope', '$http', '$timeout', '$sce
         });
 
         //Импорт отрасли
-        $http.get('http://importmetr.ru:8081/importmeter/' + industry.code + '/' + year + '/import').success(function (getImportResponse) {
+        $http.get('http://importmetr.ru:8081/importmeter/' + industry.code + '/' + $scope.selectedYear + '/import').success(function (getImportResponse) {
             if (getImportResponse != null && getImportResponse.data.year_import_months_dollars != null) {
                 importData = getImportResponse.data.year_import_months_dollars;
-                console.log("Массив импорта", importData);
+                $scope.display.code = getImportResponse.data.industry_code;
+                $scope.display.name = getImportResponse.data.industry_name;
+                $scope.display.year = $scope.selectedYear;
+                console.log("Массив импорта отрасли", importData);
                 ImportChart.series[0].setData(importData, true);
 
             };
         });
 
         //Экспорт отрасли
-        $http.get('http://importmetr.ru:8081/importmeter/' + industry.code + '/' + year + '/export').success(function (getExportResponse) {
+        $http.get('http://importmetr.ru:8081/importmeter/' + industry.code + '/' + $scope.selectedYear + '/export').success(function (getExportResponse) {
             if (getExportResponse != null && getExportResponse.data.year_import_months_dollars != null) {
                 exportData = getExportResponse.data.year_import_months_dollars;
-                console.log("Массив экспорта", exportData);
+                $scope.display.code = getExportResponse.data.industry_code;
+                $scope.display.name = getExportResponse.data.industry_name;
+                $scope.display.year = $scope.selectedYear;
+                console.log("Массив экспорта отрасли", exportData);
                 ImportChart.series[1].setData(exportData, true);
                 for (var i=0; i<prodData.length-1; i++)
                 {
@@ -155,10 +162,13 @@ importmetrApp.controller('treeController', ['$scope', '$http', '$timeout', '$sce
         });
 
         //Производство отрасли
-        $http.get('http://importmetr.ru:8081/importmeter/' + industry.code + '/' + year + '/production').success(function (getProdResponse) {
+        $http.get('http://importmetr.ru:8081/importmeter/' + industry.code + '/' + $scope.selectedYear + '/production').success(function (getProdResponse) {
             if (getProdResponse != null && getProdResponse.data.year_import_months_dollars != null) {
                 prodData = getProdResponse.data.year_import_months_dollars;
-                console.log("Массив производства", prodData);
+                $scope.display.code = getProdResponse.data.industry_code;
+                $scope.display.name = getProdResponse.data.industry_name;
+                $scope.display.year = $scope.selectedYear;
+                console.log("Массив производства отрасли", prodData);
                 ImportChart.series[2].setData(prodData, true);
             };
             for (var i=0; i<prodData.length-1; i++)
@@ -174,10 +184,13 @@ importmetrApp.controller('treeController', ['$scope', '$http', '$timeout', '$sce
     {
 
         //Импорт продукта
-        $http.get('http://importmetr.ru:8081/importmeter/' + product.tnved4 + '/' + product.tnved6 + '/' + year + '/import').success(function (getImportResponse) {
+        $http.get('http://importmetr.ru:8081/importmeter/' + product.tnved4 + '/' + product.tnved6 + '/' + $scope.selectedYear + '/import').success(function (getImportResponse) {
             if (getImportResponse != null && getImportResponse.data.year_import_months_dollars != null) {
                 importData = getImportResponse.data.year_import_months_dollars;
-                console.log("Массив импорта", importData);
+                $scope.display.code = getImportResponse.data.product_name;
+                $scope.display.name = getImportResponse.data.product_code;
+                $scope.display.year = $scope.selectedYear;
+                console.log("Массив импорта продуктов", importData);
                 ImportChart.series[0].setData(importData, true);
                 for (var i=0; i<prodData.length-1; i++)
                 {
@@ -189,10 +202,13 @@ importmetrApp.controller('treeController', ['$scope', '$http', '$timeout', '$sce
         });
 
         //Экспорт продукта
-        $http.get('http://importmetr.ru:8081/importmeter/' + product.tnved4 + '/' + product.tnved6 + '/' + year + '/export').success(function (getExportResponse) {
+        $http.get('http://importmetr.ru:8081/importmeter/' + product.tnved4 + '/' + product.tnved6 + '/' + $scope.selectedYear + '/export').success(function (getExportResponse) {
             if (getExportResponse != null && getExportResponse.data.year_import_months_dollars != null) {
                 exportData = getExportResponse.data.year_import_months_dollars;
-                console.log("Массив экспорта", exportData);
+                $scope.display.code = getExportResponse.data.product_name;
+                $scope.display.name = getExportResponse.data.product_code;
+                $scope.display.year = $scope.selectedYear;
+                console.log("Массив экспорта продуктов", exportData);
                 ImportChart.series[1].setData(exportData, true);
                 for (var i=0; i<prodData.length-1; i++)
                 {
@@ -204,9 +220,12 @@ importmetrApp.controller('treeController', ['$scope', '$http', '$timeout', '$sce
         });
 
         //Производство продукта
-        $http.get('http://importmetr.ru:8081/importmeter/' + product.tnved4 + '/' + product.tnved6 + '/' + year + '/production').success(function (getProdResponse) {
+        $http.get('http://importmetr.ru:8081/importmeter/' + product.tnved4 + '/' + product.tnved6 + '/' + $scope.selectedYear + '/production').success(function (getProdResponse) {
             if (getProdResponse != null && getProdResponse.data.year_import_months_dollars != null) {
                 prodData = getProdResponse.data.year_import_months_dollars;
+                $scope.display.code = getProdResponse.data.product_name;
+                $scope.display.name = getProdResponse.data.product_code;
+                $scope.display.year = $scope.selectedYear;
                 console.log("Массив производства", prodData);
                 ImportChart.series[2].setData(prodData, true);
             };
@@ -222,8 +241,8 @@ importmetrApp.controller('treeController', ['$scope', '$http', '$timeout', '$sce
 
 }]);
 
-ImportChart = new Highcharts.stockChart(ChartObject);
-ShareChart = new Highcharts.stockChart(Chart2Object);
+ImportChart = new Highcharts.chart(ChartObject);
+ShareChart = new Highcharts.chart(Chart2Object);
 
 
         /*

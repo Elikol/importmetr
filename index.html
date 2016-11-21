@@ -122,16 +122,20 @@
 			</div>
 			<div class="col-md-9 col-lg-9">
 				<div id="checks">
-					<div class="text-center">
+				<select ng-model="selectedYear" ng-options="year for year in years track by year">
 
+				</select>
+					<div class="text-center">
+					<div><b>Код: </b>{{display.code}}, <b>Название: </b>{{display.name}}, <b>Год: </b>{{display.year}}</div>
+
+					<!--
 						<input type="checkbox" id="import" value="Импорт" ng-click="updateChartImport();" checked>
 						<label for="import">Импорт</label>
 						<input type="checkbox" id="export" value="Экспорт" ng-click="updateChartExport();" checked>
 						<label for="export">Экспорт</label>
 						<input type="checkbox" id="production" value="Производство" ng-click="updateChartProd();" checked>
 						<label for="production">Производство</label>
-						<!-- <input type="checkbox" id="consumption" value="Потребление" ng-click="updateChartCons" checked>
-						<label for="consumption">Потребление</label> -->
+					-->
 
 
 					</div>
